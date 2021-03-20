@@ -44,7 +44,6 @@ def pytorch_id(node):
     # so append node outputs to guarantee uniqueness
     return node.scopeName() + "/outputs/" + "/".join(["{}".format(o.unique()) for o in node.outputs()])
 
-
 def get_shape(torch_node):
     """Return the output shape of the given Pytorch node."""
     # Extract node output shape from the node string representation
@@ -53,13 +52,7 @@ def get_shape(torch_node):
     # https://discuss.pytorch.org/t/node-output-shape-from-trace-graph/24351/2
     # TODO: find a better way to extract output shape
     # TODO: Assuming the node has one output. Update if we encounter a multi-output node.
-    m = re.match(r".*Float\(([\d\s\,]+)\).*", str(next(torch_node.outputs())))
-    if m:
-        shape = m.group(1)
-        shape = shape.split(",")
-        shape = tuple(map(int, shape))
-    else:
-        shape = None
+    shape = torch_node.output().type().sizes()
     return shape
 
 
