@@ -52,7 +52,10 @@ def get_shape(torch_node):
     # https://discuss.pytorch.org/t/node-output-shape-from-trace-graph/24351/2
     # TODO: find a better way to extract output shape
     # TODO: Assuming the node has one output. Update if we encounter a multi-output node.
-    shape = torch_node.output().size()
+    try:
+        shape = torch_node.output().type().sizes()
+    except:
+        shape = None
     return shape
 
 
